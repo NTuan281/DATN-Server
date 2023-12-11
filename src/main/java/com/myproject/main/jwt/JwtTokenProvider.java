@@ -1,7 +1,6 @@
 package com.myproject.main.jwt;
 
 import io.jsonwebtoken.Claims;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -16,19 +15,27 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.Date;
+import java.security.Key;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
+
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtTokenProvider {
 
-    private static final String SECRET_KEY = "yourSecretKey"; // Replace with a strong secret key
+    private Key key;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
-    
+
+    public JwtTokenProvider() {
+        // Sử dụng secretKeyFor để tạo một khóa an toàn với kích thước đủ cho HS512
+        this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    }
+
     public String generateToken(String username) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 3600000); // Token valid for 1 hour
@@ -37,32 +44,33 @@ public class JwtTokenProvider {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-	public String resolveToken(HttpServletRequest request) {
-		String bearerToken = request.getHeader("Authorization");
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7); // Bỏ đi phần "Bearer " để chỉ lấy token
         }
         return null;
-	}
-	public Authentication getAuthentication(String token) {
+    }
+
+    public Authentication getAuthentication(String token) {
         UserDetails userDetails = getUserDetailsFromToken(token);
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
@@ -75,4 +83,3 @@ public class JwtTokenProvider {
         return new User(username, "", new ArrayList<>());
     }
 }
-

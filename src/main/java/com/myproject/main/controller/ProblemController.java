@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/problems")
+@RequestMapping("/api/problem")
 public class ProblemController {
 
     private final ProblemRepository problemDao;

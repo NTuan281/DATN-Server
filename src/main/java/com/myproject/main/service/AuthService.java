@@ -64,13 +64,14 @@ public class AuthService {
     }
 
     public String authenticateUser(LoginRequest loginRequest) {
-        // Your authentication logic here
-        // Validate the username and password against your user repository
-
-        // If authentication is successful, generate a JWT
         User user = userRepository.findByUserName(loginRequest.getUsername());
-        if (user != null && loginRequest.getPassword().equals(user.getPassword())) {
-            return jwtTokenProvider.generateToken(loginRequest.getUsername());
+
+        // Kiểm tra xem user có tồn tại không
+        if (user != null) {
+            // Kiểm tra mật khẩu
+            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                return jwtTokenProvider.generateToken(loginRequest.getUsername());
+            }
         }
         return null;
     }

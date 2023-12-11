@@ -43,6 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Permit access to the authentication endpoint
         http.authorizeRequests().antMatchers("/api/auth/login").permitAll();
         
+        http.authorizeRequests().antMatchers("/execute").permitAll();
+        
         
 
         // Secure other endpoints with JWT
