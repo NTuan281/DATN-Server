@@ -39,15 +39,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
 
         // Cho phép đường dẫn đăng ký không yêu cầu xác thực
-        http.authorizeRequests().antMatchers("/api/auth/register").permitAll();
+        http.authorizeRequests().antMatchers("/api/**").permitAll();
         // Permit access to the authentication endpoint
         http.authorizeRequests().antMatchers("/api/auth/login").permitAll();
+        
+        http.authorizeRequests().antMatchers("/api/users").permitAll();
         
         http.authorizeRequests().antMatchers("/execute").permitAll();
         
         
 
-        // Secure other endpoints with JWT
+//      Secure other endpoints with JWT
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN") // Example: Requires ADMIN role for GET /api/users
                 .anyRequest().authenticated().and().apply(new JwtTokenFilterConfigurer(jwtTokenProvider));

@@ -1,6 +1,9 @@
 package com.myproject.main.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +27,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String token = authService.authenticateUser(loginRequest);
         if (token != null) {
+        	Cookie cookie = new Cookie("token", token);
+            cookie.setMaxAge(3600); // Thời gian sống của cookie (đơn vị là giây), ở đây là 1 giờ
+            cookie.setHttpOnly(true);
+            cookie.setPath("/"); // Đặt path của cookie, ở đây là toàn bộ ứng dụng
+            response.addCookie(cookie);
             return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");

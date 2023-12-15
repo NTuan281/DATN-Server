@@ -33,6 +33,9 @@ public class Problem {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL)
+    private List<TestCase> testcases;
 
 	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Submission> submissions;
@@ -40,6 +43,31 @@ public class Problem {
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "problem_tags", joinColumns = @JoinColumn(name = "problem_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<Tag> tags = new HashSet<>();
+
+	
+	
+	public List<TestCase> getTestcases() {
+		return testcases;
+	}
+
+	public void setTestcases(List<TestCase> testcases) {
+		this.testcases = testcases;
+	}
+
+	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt, User user,
+			List<TestCase> testcases, List<Submission> submissions, Set<Tag> tags) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.guide = guide;
+		this.difficulty = difficulty;
+		this.createAt = createAt;
+		this.user = user;
+		this.testcases = testcases;
+		this.submissions = submissions;
+		this.tags = tags;
+	}
 
 	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt, User user,
 			List<Submission> submissions, Set<Tag> tags) {
