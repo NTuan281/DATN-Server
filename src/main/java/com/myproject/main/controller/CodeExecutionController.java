@@ -2,6 +2,7 @@ package com.myproject.main.controller;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
@@ -11,33 +12,39 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.io.BufferedWriter;
-
+import java.io.Console;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 //import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myproject.main.request.ExecuteRequest;
+import com.myproject.main.response.ExecuteResponse;
 
 @RestController
 public class CodeExecutionController {
 
-    @PostMapping("/execute")
-    public String executeCode(@RequestBody ExecuteRequest request) {
+    @PostMapping("/api/executes")
+    public ExecuteResponse executeCode(@RequestBody ExecuteRequest request) {
         try {
             // Thực thi code
-            String result = executeJavaCode(request);
+            ExecuteResponse result = executeJavaCode(request);
             return result;
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+        	ExecuteResponse result = new ExecuteResponse();
+        	result.setResponseString(e.getMessage());
+        	result.setResponseResult(false);
+            return result;
         }
     }
 
-    private String executeJavaCode(ExecuteRequest request) throws Exception {
-        String fileName = "TempCodeUtils.java";
-        String className = "TempCodeUtils";
-        String mainFunc = addFunctionMain(request);
+    private ExecuteResponse executeJavaCode(ExecuteRequest request) throws Exception {
+        String fileName = "Solutions.java";
+        String className = "Solutions";
+
+        ExecuteResponse response = new ExecuteResponse();
 
         // Tạo một thư mục làm việc riêng biệt cho mỗi phiên biên dịch và thực thi
         String workingDirectory = System.getProperty("user.dir") + "/temp";
@@ -45,10 +52,13 @@ public class CodeExecutionController {
 
         try (FileWriter fileWriter = new FileWriter(workingDirectory + "/" + fileName)) {
             // Ghi dữ liệu vào file
-            Files.write(Paths.get(workingDirectory, fileName), (request.getCode().substring(0, request.getCode().length() - 1)+addFunctionMain(request)).getBytes());
+        	String codeWithImport = "import java.util.Arrays;" + request.getCode().trim().substring(0, request.getCode().length() - 1) + addFunctionMain(request);
+            Files.write(Paths.get(workingDirectory, fileName), codeWithImport.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception e) {
+        	response.setResponseString(("Error creating temporary Java file: " + e.getMessage()));
+        	response.setResponseResult(false);
             // Xử lý lỗi khi không thể tạo file Java tạm thời
-            return ("Error creating temporary Java file: " + e.getMessage());
+            return response;
         }
 
         ProcessBuilder processBuilder = new ProcessBuilder("javac", fileName);
@@ -64,7 +74,7 @@ public class CodeExecutionController {
                 errorOutput.append(errorScanner.nextLine()).append("\n");
             }
             // Xử lý lỗi biên dịch
-            System.err.println("Compile Error:\n" + errorOutput.toString()+mainFunc);
+            System.err.println("Compile Error:\n" + errorOutput.toString()+"import java.util.Arrays;" + request.getCode().trim().substring(0, request.getCode().length() - 1) + addFunctionMain(request));
             throw new IllegalStateException("Compile Error:\n" + errorOutput.toString());
         }
 
@@ -94,13 +104,19 @@ public class CodeExecutionController {
 
         // Kiểm tra kết quả và trả về chuỗi kết quả
         if (errorOutput.length() > 0) {
-            return "Compile Error:\n" + errorOutput.toString();
+        	response.setResponseString(("Compile Error:\n" + errorOutput.toString()));
+        	response.setResponseResult(false);
+            return response;
         } else {
             // Kiểm tra kết quả của hàm findMaxValue với giá trị kỳ vọng
             if (output.toString().trim().equals(request.getOutput().trim())) {
-                return "Accepted\n"+ output;
+            	response.setResponseString("Accepted\n"+ output);
+            	response.setResponseResult(true);
+            	return response;
             } else {
-                return "Wrong Answer";
+            	response.setResponseString("Wrong Answer\n"+ output);
+            	response.setResponseResult(false);
+                return response;
             }
         }
     }
@@ -126,7 +142,7 @@ public class CodeExecutionController {
         }        
         
         return "public static void main(String[] args) {" +
-                "int result = " + request.getFunctionName() + "(" + paramStringBuilder.toString() + ");" +
+                "String result = " + request.getFunctionName() + "(" + paramStringBuilder.toString() + ");" +
                 "System.out.println(result);" +
                 "}}";
     }

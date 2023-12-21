@@ -42,7 +42,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Logic tùy chỉnh nếu token không hợp lệ hoặc xác thực thất bại
         // Ví dụ, bạn có thể muốn ghi lại một lỗi hoặc xử lý tình huống khác
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
+        
         // Tiếp tục chuỗi filter
         chain.doFilter(request, response);
     }

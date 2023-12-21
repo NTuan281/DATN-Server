@@ -1,5 +1,7 @@
 package com.myproject.main.request;
 
+import java.sql.Timestamp;
+
 public class RegisterRequest {
 	    private String username;
 	    private String password;
@@ -7,9 +9,16 @@ public class RegisterRequest {
 	    private String fullname;
 	    private String description;
 	    private String role;
+	    private Timestamp createAt;
 		
-	    public RegisterRequest(String username, String password, String email, String fullname, String description,
-				String role) {
+	    public Timestamp getCreateAt() {
+			return createAt;
+		}
+		public void setCreateAt(Timestamp createAt) {
+			this.createAt = createAt;
+		}
+		public RegisterRequest(String username, String password, String email, String fullname, String description,
+				String role, Timestamp createAt) {
 			super();
 			this.username = username;
 			this.password = password;
@@ -17,9 +26,9 @@ public class RegisterRequest {
 			this.fullname = fullname;
 			this.description = description;
 			this.role = role;
+			this.createAt = createAt;
 		}
-		
-	    public RegisterRequest() {
+		public RegisterRequest() {
 			super();
 		}
 		public String getUsername() {

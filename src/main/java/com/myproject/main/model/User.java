@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
 
 
 
@@ -38,8 +41,12 @@ public class User {
 	@Column(name = "description")
 	private String description;
 	
+	@Value("${some.key:USER}")
 	@Column(name = "role",nullable = false)
 	private String role;
+	
+	@Value("${some.key:true}")
+	private boolean isActive;
 	
 	@Column(name = "create_at")
 	private Date createAt;
