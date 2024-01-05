@@ -45,17 +45,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         
         http.authorizeRequests().antMatchers("/api/executes").permitAll();
         
-//        http.authorizeRequests().antMatchers("/api/users").permitAll();
-        
+        http.authorizeRequests().antMatchers("/api/tags").permitAll();
 
-//      Secure other endpoints with JWT
-//        http.authorizeRequests()
+        //        http.authorizeRequests()
 //        .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
-//        .antMatchers(HttpMethod.POST, "/api/executes").hasRole("USER")
+//        .antMatchers("/api/executes").hasRole("USER")
 //        .anyRequest().authenticated()
 //        .and()
 //        .apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
+        
         // Disable unnecessary authentication mechanisms and session creation
         http.httpBasic().disable()
                 .formLogin().disable()

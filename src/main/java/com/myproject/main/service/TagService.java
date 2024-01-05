@@ -12,31 +12,33 @@ import com.myproject.main.repository.TagRepository;
 
 @Service
 public class TagService {
-	 private final TagRepository tagDao;
+	 private final TagRepository tagRepository;
 
 	    @Autowired
-	    public TagService(TagRepository tagDao) {
-	        this.tagDao = tagDao;
+	    public TagService(TagRepository tagRepository) {
+	        this.tagRepository = tagRepository;
 	    }
 
 	    public List<Tag> getAllTags() {
-	        return tagDao.findAll();
+	        return tagRepository.findAll();
 	    }
 
 	    public Tag getTagById(Integer id) {
-	        return tagDao.findById(id).orElse(null);
+	        return tagRepository.findById(id).orElse(null);
 	    }
 
-	    public Tag createTag(Tag tag) {
-	        return tagDao.save(tag);
+	    public Tag createTag(String tag) {
+	    	Tag newTag = new Tag();
+	        newTag.setNameTag(tag);
+	        return tagRepository.save(newTag);
 	    }
 
 	    public Tag updateTag(Integer id, Tag tag) {
 	        tag.setId(id);
-	        return tagDao.save(tag);
+	        return tagRepository.save(tag);
 	    }
 
 	    public void deleteTag(Integer id) {
-	    	tagDao.deleteById(id);
+	    	tagRepository.deleteById(id);
 	    }
 }

@@ -1,6 +1,9 @@
 package com.myproject.main.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +33,7 @@ public class Problem {
 	@Column(name = "create_at")
 	private Date createAt;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
 	
@@ -53,7 +56,7 @@ public class Problem {
 	public void setTestcases(List<TestCase> testcases) {
 		this.testcases = testcases;
 	}
-
+	
 	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt, User user,
 			List<TestCase> testcases, List<Submission> submissions, Set<Tag> tags) {
 		super();
@@ -65,33 +68,6 @@ public class Problem {
 		this.createAt = createAt;
 		this.user = user;
 		this.testcases = testcases;
-		this.submissions = submissions;
-		this.tags = tags;
-	}
-
-	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt, User user,
-			List<Submission> submissions, Set<Tag> tags) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.guide = guide;
-		this.difficulty = difficulty;
-		this.createAt = createAt;
-		this.user = user;
-		this.submissions = submissions;
-		this.tags = tags;
-	}
-
-	public Problem(String name, String description, String guide, String difficulty, Date createAt, User user,
-			List<Submission> submissions, Set<Tag> tags) {
-		super();
-		this.name = name;
-		this.description = description;
-		this.guide = guide;
-		this.difficulty = difficulty;
-		this.createAt = createAt;
-		this.user = user;
 		this.submissions = submissions;
 		this.tags = tags;
 	}

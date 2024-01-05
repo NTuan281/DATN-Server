@@ -30,16 +30,12 @@ public class AuthController {
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String token = authService.authenticateUser(loginRequest);
         if (token != null) {
-        	Cookie cookie = new Cookie("token", token);
-            cookie.setMaxAge(3600); // Thời gian sống của cookie (đơn vị là giây), ở đây là 1 giờ
-            cookie.setHttpOnly(true);
-            cookie.setPath("/"); // Đặt path của cookie, ở đây là toàn bộ ứng dụng
-            response.addCookie(cookie);
             return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
         // Gọi phương thức registerUser từ AuthService

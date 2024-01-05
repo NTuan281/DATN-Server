@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.myproject.main.model.Tag;
-import com.myproject.main.repository.TagRepository;
+import com.myproject.main.service.TagService;
 
 import java.util.List;
 
@@ -12,36 +12,36 @@ import java.util.List;
 @RequestMapping("/api/tags")
 public class TagController {
 
-    private final TagRepository tagDAO;
+    private final TagService tagService;
 
     @Autowired
-    public TagController(TagRepository tagDAO) {
-        this.tagDAO = tagDAO;
+    public TagController(TagService tagService) {
+        this.tagService = tagService;
     }
 
     @GetMapping
     public List<Tag> getAllTags() {
-        return tagDAO.findAll();
+        return tagService.getAllTags();
     }
 
     @GetMapping("/{id}")
     public Tag getTagById(@PathVariable int id) {
-        return tagDAO.findById(id).orElse(null);
+        return tagService.getTagById(id);
     }
 
     @PostMapping
-    public Tag createTag(@RequestBody Tag tag) {
-        return tagDAO.save(tag);
+    public Tag addTag(@RequestBody String tagName) {
+        return tagService.createTag(tagName);
     }
 
     @PutMapping("/{id}")
     public Tag updateTag(@PathVariable int id, @RequestBody Tag tag) {
         tag.setId(id);
-        return tagDAO.save(tag);
+        return tagService.updateTag(id,tag);
     }
 
     @DeleteMapping("/{id}")
     public void deleteTag(@PathVariable int id) {
-        tagDAO.deleteById(id);
+        tagService.deleteTag(id);
     }
 }
