@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ public class Tag {
 	@Column(name = "name",nullable = false,unique = true)
 	private String name;
 	
-	@ManyToMany(mappedBy = "tags"   )
+	@ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
 	private Set<Problem> problems = new HashSet<Problem>();
 	
 	public Tag(int id, String nameTag) {

@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 @TypeDef(name = "json", typeClass = JsonType.class)
@@ -30,9 +31,8 @@ public class TestCase {
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
-    @Type(type = "json")
-    @Column(columnDefinition = "json", nullable = false)
-    private List<Object> inputs;
+    @Column( nullable = false)
+    private String inputs;
 
     @Column(nullable = false)
     private String output;
@@ -53,8 +53,6 @@ public class TestCase {
 		this.problem = problem;
 	}
 
-	
-
 	public String getOutput() {
 		return output;
 	}
@@ -63,23 +61,22 @@ public class TestCase {
 		this.output = output;
 	}
 
-	public List<Object> getInputs() {
+	public String getInputs() {
 		return inputs;
 	}
 
-	public void setInputs(List<Object> inputs) {
+	public void setInputs(String inputs) {
 		this.inputs = inputs;
 	}
 
-	public TestCase(int id, Problem problem, List<Object> inputs, String output) {
+	public TestCase(Problem problem, String inputs, String output) {
+	    this.problem = problem;
+	    this.inputs = inputs;
+	    this.output = output;
+	}
+
+
+	public TestCase() {
 		super();
-		this.id = id;
-		this.problem = problem;
-		this.inputs = inputs;
-		this.output = output;
-	}
-
-	
-
-    
+	}    
 }

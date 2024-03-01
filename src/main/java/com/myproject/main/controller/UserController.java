@@ -34,7 +34,7 @@ public class UserController {
         if (token != null && token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
             if (jwtTokenProvider.validateToken(jwt)) {
-                String username = jwtTokenProvider.getUsernameFromToken(jwt);
+                int username = jwtTokenProvider.getIdFromToken(jwt);
                 // Retrieve user profile based on the username
                 return ResponseEntity.ok("User profile for: " + username);
             }
@@ -63,6 +63,7 @@ public class UserController {
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
+    
 
     @PutMapping("/{id}")
     public User updateUser(@PathVariable int id, @RequestBody User user) {

@@ -18,6 +18,8 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.myproject.main.jwt.JwtAuthenticationEntryPoint;
 import com.myproject.main.jwt.JwtTokenProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.myproject.main.filter.JwtTokenFilterConfigurer;
 
 @Configuration
@@ -46,6 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/executes").permitAll();
         
         http.authorizeRequests().antMatchers("/api/tags").permitAll();
+        
+        http.authorizeRequests().antMatchers("/api/testcases").permitAll();
+        
+        http.authorizeRequests().antMatchers("/api/problem").permitAll(); 
+        
+        http.authorizeRequests().antMatchers("/api/users").permitAll();
 
         //        http.authorizeRequests()
 //        .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
@@ -84,4 +92,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+//    @Bean
+//    public ObjectMapper objectMapper() {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        // Cấu hình Jackson theo ý muốn
+//        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+//        // Các cấu hình khác nếu cần
+//
+//        return objectMapper;
+//    }
 }

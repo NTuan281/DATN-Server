@@ -36,19 +36,25 @@ public class JwtTokenProvider {
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, int id) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 3600000); // Token valid for 1 hour
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("id", id)
                 .claim("role", role) // Thêm trường "role" vào payload
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
-
+    
+    public int getIdFromToken(String token) {
+    	Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+        return (int) claims.get("id");
+    }
+    
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         return claims.getSubject();

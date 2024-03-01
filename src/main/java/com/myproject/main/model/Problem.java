@@ -32,12 +32,16 @@ public class Problem {
 
 	@Column(name = "create_at")
 	private Date createAt;
+	
+	@Column(name = "content")
+	private String content;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
 	
 	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL)
+	@JsonIgnore
     private List<TestCase> testcases;
 
 	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,15 +61,17 @@ public class Problem {
 		this.testcases = testcases;
 	}
 	
-	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt, User user,
-			List<TestCase> testcases, List<Submission> submissions, Set<Tag> tags) {
+	
+
+	public Problem(String name, String description, String guide, String difficulty, Date createAt, String content,
+			User user, List<TestCase> testcases, List<Submission> submissions, Set<Tag> tags) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.guide = guide;
 		this.difficulty = difficulty;
 		this.createAt = createAt;
+		this.content = content;
 		this.user = user;
 		this.testcases = testcases;
 		this.submissions = submissions;
@@ -146,6 +152,16 @@ public class Problem {
 
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
+	}
+
+	
+	
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	@Override

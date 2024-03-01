@@ -60,7 +60,7 @@ public class AuthService {
         userRepository.save(newUser);
 
         // Trả về JWT token cho việc đăng nhập ngay sau khi đăng ký
-        return jwtTokenProvider.generateToken(newUser.getUserName(), newUser.getRole());
+        return jwtTokenProvider.generateToken(newUser.getUserName(), newUser.getRole(), newUser.getId());
     }
 
     public String authenticateUser(LoginRequest loginRequest) {
@@ -71,9 +71,10 @@ public class AuthService {
             // Kiểm tra mật khẩu
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
                 String role = user.getRole(); // Lấy vai trò từ đối tượng User
-
+                int id = user.getId();
+                
                 // Gửi thông tin username và role vào phương thức generateToken
-                return jwtTokenProvider.generateToken(loginRequest.getUsername(), role);
+                return jwtTokenProvider.generateToken(loginRequest.getUsername(), role, id);
             }
         }
         return null;
