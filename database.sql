@@ -1,9 +1,4 @@
--- --------------------------------------------------------
--- Máy chủ:                      127.0.0.1
--- Server version:               10.4.28-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
--- HeidiSQL Phiên bản:           12.5.0.6677
--- --------------------------------------------------------
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
@@ -16,8 +11,8 @@
 
 
 -- Dumping database structure for erd
-CREATE DATABASE IF NOT EXISTS `erd` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `erd`;
+CREATE DATABASE IF NOT EXISTS `datn` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `datn`;
 
 -- Dumping structure for table erd.problem
 CREATE TABLE IF NOT EXISTS `problem` (
