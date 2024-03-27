@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.myproject.main.model.Problem;
 import com.myproject.main.repository.ProblemRepository;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,8 @@ public class ProblemController {
 
     @PostMapping
     public ResponseEntity<Problem> createProblem(@RequestBody Problem problem) {
-        Problem createdProblem = problemDao.save(problem);
+    	problem.setCreateAt(new Date(System.currentTimeMillis())); // Use current time
+    	Problem createdProblem = problemDao.save(problem);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProblem);
     }
 
