@@ -1,6 +1,9 @@
 package com.myproject.main.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.sql.Date;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,7 +41,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequest registerRequest) {
-        // Gọi phương thức registerUser từ AuthService
+    	registerRequest.setCreateAt(new Date(System.currentTimeMillis()));
     	String token = authService.registerUser(registerRequest);
         if (token != null) {
             return ResponseEntity.ok("Registration successful");
