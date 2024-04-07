@@ -43,22 +43,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Cho phép đường dẫn đăng ký không yêu cầu xác thực
         http.authorizeRequests().antMatchers("/api/**").permitAll();
         // Permit access to the authentication endpoint
-//        http.authorizeRequests().antMatchers("/api/auth/login").permitAll();
-//        
-//        http.authorizeRequests().antMatchers("/api/executes").permitAll();
-//        
-//        http.authorizeRequests().antMatchers("/api/tags").permitAll();
-//        
-//        http.authorizeRequests().antMatchers("/api/testcases").permitAll();
-//        
-//        http.authorizeRequests().antMatchers("/api/problem").permitAll(); 
+        
+        http.authorizeRequests().antMatchers("/api/executes").permitAll();
 
         http.authorizeRequests()
         .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
         .antMatchers(HttpMethod.GET, "/api/problem").hasRole("ADMIN")
         .antMatchers(HttpMethod.POST, "/api/problem").hasRole("ADMIN")
-        .antMatchers("/api/executes").hasRole("USER")
-        .anyRequest().authenticated()
         .and()
         .apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
