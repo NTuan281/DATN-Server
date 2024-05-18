@@ -9,6 +9,7 @@ import com.myproject.main.jwt.JwtTokenProvider;
 import com.myproject.main.model.User;
 import com.myproject.main.repository.UserRepository;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -61,7 +62,8 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+        user.setCreateAt(new Date(System.currentTimeMillis()));
+    	return userRepository.save(user);
     }
     
 

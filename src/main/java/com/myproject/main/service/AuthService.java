@@ -55,7 +55,7 @@ public class AuthService {
         newUser.setFullName(registerRequest.getFullname());
         newUser.setDescription(registerRequest.getDescription());
         newUser.setRole(registerRequest.getRole());
-
+        newUser.setCreateAt(new Date(System.currentTimeMillis()));
         // Lưu người dùng mới vào cơ sở dữ liệu
         userRepository.save(newUser);
 

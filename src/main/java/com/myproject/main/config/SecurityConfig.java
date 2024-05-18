@@ -42,21 +42,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Cho phép đường dẫn đăng ký không yêu cầu xác thực
         http.authorizeRequests().antMatchers("/api/**").permitAll();
-        // Permit access to the authentication endpoint
         
         http.authorizeRequests().antMatchers("/api/executes").permitAll();
 
         http.authorizeRequests().antMatchers("/api/users/**").permitAll();
         
+        http.authorizeRequests().antMatchers("/api/problem").permitAll();
+          
         http.authorizeRequests()
         .antMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
-        .antMatchers(HttpMethod.GET, "/api/problem").hasRole("ADMIN")
         .antMatchers(HttpMethod.POST, "/api/problem").hasRole("ADMIN")
         .and()
         .apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
 
-        
-        // Disable unnecessary authentication mechanisms and session creation
         http.httpBasic().disable()
                 .formLogin().disable()
                 .logout().disable()
