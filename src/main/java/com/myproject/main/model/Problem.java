@@ -33,8 +33,8 @@ public class Problem {
 	@Column(name = "create_at")
 	private Date createAt;
 	
-	@Column(name = "content")
-	private String content;
+	@Column(name = "functionName")
+	private String functionName;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
@@ -63,7 +63,7 @@ public class Problem {
 	
 	
 
-	public Problem(String name, String description, String guide, String difficulty, Date createAt, String content,
+	public Problem(String name, String description, String guide, String difficulty, Date createAt, String functionName,
 			User user, List<TestCase> testcases, List<Submission> submissions, Set<Tag> tags) {
 		super();
 		this.name = name;
@@ -71,7 +71,7 @@ public class Problem {
 		this.guide = guide;
 		this.difficulty = difficulty;
 		this.createAt = createAt;
-		this.content = content;
+		this.functionName = functionName;
 		this.user = user;
 		this.testcases = testcases;
 		this.submissions = submissions;
@@ -157,11 +157,11 @@ public class Problem {
 	
 	
 	public String getContent() {
-		return content;
+		return functionName;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setContent(String functionName) {
+		this.functionName = functionName;
 	}
 
 	@Override

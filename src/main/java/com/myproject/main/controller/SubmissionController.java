@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.myproject.main.model.Submission;
-import com.myproject.main.repository.SubmissionRepository;
+import com.myproject.main.service.SubmissionService;
 
 import java.util.List;
 
@@ -12,36 +12,36 @@ import java.util.List;
 @RequestMapping("/api/submissions")
 public class SubmissionController {
 
-    private final SubmissionRepository submissionDAO;
+    private final SubmissionService submissionService;
 
     @Autowired
-    public SubmissionController(SubmissionRepository submissionDAO) {
-        this.submissionDAO = submissionDAO;
+    public SubmissionController(SubmissionService submissionService) {
+        this.submissionService = submissionService;
     }
 
     @GetMapping
     public List<Submission> getAllSubmissions() {
-        return submissionDAO.findAll();
+        return submissionService.getAllSubmissions();
     }
 
     @GetMapping("/{id}")
     public Submission getSubmissionById(@PathVariable int id) {
-        return submissionDAO.findById(id).orElse(null);
+        return submissionService.getSubmissionById(id);
     }
 
     @PostMapping
     public Submission createSubmission(@RequestBody Submission submission) {
-        return submissionDAO.save(submission);
+        return submissionService.createSubmission(submission);
     }
 
     @PutMapping("/{id}")
     public Submission updateSubmission(@PathVariable int id, @RequestBody Submission submission) {
         submission.setId(id);
-        return submissionDAO.save(submission);
+        return submissionService.updateSubmission(id,submission);
     }
 
     @DeleteMapping("/{id}")
     public void deleteSubmission(@PathVariable int id) {
-        submissionDAO.deleteById(id);
+        submissionService.deleteSubmission(id);
     }
 }

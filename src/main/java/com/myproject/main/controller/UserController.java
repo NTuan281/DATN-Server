@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.myproject.main.jwt.JwtTokenProvider;
 import com.myproject.main.model.User;
-import com.myproject.main.repository.UserRepository;
+import com.myproject.main.service.UserService;
 
 import java.sql.Date;
 import java.util.List;
@@ -16,18 +16,18 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     
     @Autowired
-    public UserController(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider) {
+        this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @GetMapping
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @GetMapping("/profile")
@@ -48,7 +48,7 @@ public class UserController {
         if (token != null && token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
             if (jwtTokenProvider.validateToken(jwt)) {
-                User user = userRepository.findById(id).orElse(null);
+                User user = userService.getUserById(id);
                 if (user != null) {
                     return ResponseEntity.ok(user);
                 } else {
@@ -63,18 +63,18 @@ public class UserController {
     @PostMapping
     public User createUser(@RequestBody User user) {
         user.setCreateAt(new Date(System.currentTimeMillis()));
-    	return userRepository.save(user);
+    	return userService.createUser(user);
     }
     
 
     @PutMapping("/{id}")
     public User updateUser(@PathVariable int id, @RequestBody User user) {
         user.setId(id);
-        return userRepository.save(user);
+        return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable int id) {
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
     }
 }

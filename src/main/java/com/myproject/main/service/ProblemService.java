@@ -1,6 +1,7 @@
 package com.myproject.main.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,31 +14,35 @@ import com.myproject.main.repository.ProblemRepository;
 @Service
 public class ProblemService {
 
-    private final ProblemRepository problemDao;
+    private final ProblemRepository problemRepository;
 
     @Autowired
-    public ProblemService(ProblemRepository problemDao) {
-        this.problemDao = problemDao;
+    public ProblemService(ProblemRepository problemRepository) {
+        this.problemRepository = problemRepository;
     }
 
     public List<Problem> getAllProblems() {
-        return problemDao.findAll();
+        return problemRepository.findAll();
     }
 
-    public Problem getProblemById(Integer id) {
-        return problemDao.findById(id).orElse(null);
+    public Optional<Problem> getProblemById(int id) {
+        return problemRepository.findById(id).or(null);
     }
 
     public Problem createProblem(Problem problem) {
-        return problemDao.save(problem);
+        return problemRepository.save(problem);
     }
 
-    public Problem updateProblem(Integer id, Problem problem) {
+    public Problem updateProblem(int id, Problem problem) {
         problem.setId(id);
-        return problemDao.save(problem);
+        return problemRepository.save(problem);
     }
 
-    public void deleteProblem(Integer id) {
-        problemDao.deleteById(id);
+    public boolean existsById(int id) {
+        return problemRepository.existsById(id);
+    }
+    
+    public void deleteProblem(int id) {
+        problemRepository.deleteById(id);
     }
 }
