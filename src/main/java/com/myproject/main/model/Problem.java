@@ -33,8 +33,11 @@ public class Problem {
 	@Column(name = "create_at")
 	private Date createAt;
 	
-	@Column(name = "functionName")
+	@Column(name = "function_name")
 	private String functionName;
+	
+	@Column(name = "return_type")
+	private String returnType;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
@@ -60,22 +63,39 @@ public class Problem {
 	public void setTestcases(List<TestCase> testcases) {
 		this.testcases = testcases;
 	}
-	
-	
 
-	public Problem(String name, String description, String guide, String difficulty, Date createAt, String functionName,
-			User user, List<TestCase> testcases, List<Submission> submissions, Set<Tag> tags) {
+	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt,
+			String functionName, String returnType, User user, List<TestCase> testcases, List<Submission> submissions,
+			Set<Tag> tags) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.guide = guide;
 		this.difficulty = difficulty;
 		this.createAt = createAt;
 		this.functionName = functionName;
+		this.returnType = returnType;
 		this.user = user;
 		this.testcases = testcases;
 		this.submissions = submissions;
 		this.tags = tags;
+	}
+
+	public String getFunctionName() {
+		return functionName;
+	}
+
+	public void setFunctionName(String functionName) {
+		this.functionName = functionName;
+	}
+
+	public String getReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
 	}
 
 	public Problem() {
@@ -154,19 +174,11 @@ public class Problem {
 		this.tags = tags;
 	}
 
-	
-	
-	public String getContent() {
-		return functionName;
-	}
-
-	public void setContent(String functionName) {
-		this.functionName = functionName;
-	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(createAt, description, difficulty, guide, id, name, submissions, tags, user);
+		return Objects.hash(createAt, description, difficulty, functionName, guide, id, name, returnType, submissions,
+				tags, testcases, user);
 	}
 
 	@Override
@@ -179,15 +191,18 @@ public class Problem {
 			return false;
 		Problem other = (Problem) obj;
 		return Objects.equals(createAt, other.createAt) && Objects.equals(description, other.description)
-				&& Objects.equals(difficulty, other.difficulty) && Objects.equals(guide, other.guide) && id == other.id
-				&& Objects.equals(name, other.name) && Objects.equals(submissions, other.submissions)
-				&& Objects.equals(tags, other.tags) && Objects.equals(user, other.user);
+				&& Objects.equals(difficulty, other.difficulty) && Objects.equals(functionName, other.functionName)
+				&& Objects.equals(guide, other.guide) && id == other.id && Objects.equals(name, other.name)
+				&& Objects.equals(returnType, other.returnType) && Objects.equals(submissions, other.submissions)
+				&& Objects.equals(tags, other.tags) && Objects.equals(testcases, other.testcases)
+				&& Objects.equals(user, other.user);
 	}
 
 	@Override
 	public String toString() {
 		return "Problem [id=" + id + ", name=" + name + ", description=" + description + ", guide=" + guide
-				+ ", difficulty=" + difficulty + ", createAt=" + createAt + ", user=" + user + ", submissions="
+				+ ", difficulty=" + difficulty + ", createAt=" + createAt + ", functionName=" + functionName
+				+ ", returnType=" + returnType + ", user=" + user + ", testcases=" + testcases + ", submissions="
 				+ submissions + ", tags=" + tags + "]";
 	}
 

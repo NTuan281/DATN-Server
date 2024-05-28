@@ -142,7 +142,7 @@ public class CodeExecutionController {
         }        
         
         return "public static void main(String[] args) {Solutions s = new Solutions();" +
-                "String result = s. " + request.getFunctionName() + "(" + paramStringBuilder.toString() + ");" +
+                "String result = s." + request.getFunctionName() + "(" + paramStringBuilder.toString() + ");" +
                 "System.out.println(result);" +
                 "}}";
     }

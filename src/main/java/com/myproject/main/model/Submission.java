@@ -21,7 +21,7 @@ public class Submission {
 	private String source;
 	@Column(name = "submission_time")
 	private Date submissionTime;
-	@Column(name = "rusult",nullable = false)
+	@Column(name = "result",nullable = false)
 	private String result;
 	
 	@ManyToOne
