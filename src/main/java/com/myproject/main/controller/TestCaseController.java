@@ -23,7 +23,7 @@ public class TestCaseController {
     @Autowired
     private TestCaseService testCaseService;
 
-    @GetMapping("/{problemId}")
+    @GetMapping("/problem/{problemId}")
     public List<TestCase> getTestCasesByProblemId(@PathVariable int problemId) {
         return testCaseService.getTestCasesByProblemId(problemId);
     }

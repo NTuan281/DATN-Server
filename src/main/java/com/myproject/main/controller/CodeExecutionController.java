@@ -52,7 +52,7 @@ public class CodeExecutionController {
 
         try (FileWriter fileWriter = new FileWriter(workingDirectory + "/" + fileName)) {
             // Ghi dữ liệu vào file
-        	String codeWithImport = "import java.util.Arrays;" + request.getCode().trim().substring(0, request.getCode().length() - 1) + addFunctionMain(request);
+        	String codeWithImport = "import java.util.*;" + request.getCode().trim().substring(0, request.getCode().length() - 1) + addFunctionMain(request);
             Files.write(Paths.get(workingDirectory, fileName), codeWithImport.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception e) {
         	response.setResponseString(("Error creating temporary Java file: " + e.getMessage()));
@@ -74,8 +74,8 @@ public class CodeExecutionController {
                 errorOutput.append(errorScanner.nextLine()).append("\n");
             }
             // Xử lý lỗi biên dịch
-            System.err.println("Compile Error:\n" + errorOutput.toString()+"import java.util.Arrays;" + request.getCode().trim().substring(0, request.getCode().length() - 1) + addFunctionMain(request));
-            throw new IllegalStateException("Compile Error:\n" + errorOutput.toString());
+            System.err.println("COMPILE ERROR\n\n" + errorOutput.toString()+"import java.util.*;" + request.getCode().trim().substring(0, request.getCode().length() - 1) + addFunctionMain(request));
+            throw new IllegalStateException("COMPILE ERROR\n\n" + errorOutput.toString());
         }
 
         // Thêm hàm thực thi cụ thể của hàm findMaxValue và kiểm tra kết quả
@@ -104,21 +104,32 @@ public class CodeExecutionController {
 
         // Kiểm tra kết quả và trả về chuỗi kết quả
         if (errorOutput.length() > 0) {
-        	response.setResponseString(("Compile Error:\n" + errorOutput.toString()));
+        	response.setResponseString(("COMPILE ERROR\n\n" + errorOutput.toString()));
         	response.setResponseResult(false);
             return response;
         } else {
             // Kiểm tra kết quả của hàm findMaxValue với giá trị kỳ vọng
             if (output.toString().trim().equals(request.getOutput().trim())) {
-            	response.setResponseString("Accepted\n"+ output);
+            	response.setResponseString("ACCEPTED\n\n"+ output);
             	response.setResponseResult(true);
             	return response;
             } else {
-            	response.setResponseString("Wrong Answer\n"+ output);
+            	response.setResponseString("WRONG ANSWER\n\n"+ output);
             	response.setResponseResult(false);
                 return response;
             }
         }
+    }
+    public String printOutpt(ExecuteRequest request) {
+		
+    	String result = "";
+    	
+    	if(request.getReturnType().equals("int[]"))
+    		result = "System.out.println(Arrays.toString(result));";
+    	else
+    		result = "System.out.println(result);";
+  	
+    	return result;
     }
     public String addFunctionMain(ExecuteRequest request) {
         List<Object> parametersRequest = request.getParameters();
@@ -132,18 +143,18 @@ public class CodeExecutionController {
                 paramStringBuilder.append(", ");
             }
             if (parameters[i] instanceof List) {
-                // Sử dụng StringBuilder để xây dựng chuỗi thay vì sử dụng chuỗi
                 StringBuilder subArrayStringBuilder = new StringBuilder("new int[]");
                 subArrayStringBuilder.append(parameters[i].toString().replaceAll("\\[", "\\{").replaceAll("\\]", "\\}"));
                 paramStringBuilder.append(subArrayStringBuilder);
             } else if (parameters[i] instanceof Integer) {
                 paramStringBuilder.append(parameters[i]);
             }
+            System.out.println(paramStringBuilder.toString()); 
         }        
         
         return "public static void main(String[] args) {Solutions s = new Solutions();" +
-                "String result = s." + request.getFunctionName() + "(" + paramStringBuilder.toString() + ");" +
-                "System.out.println(result);" +
+                request.getReturnType()+" result = s." + request.getFunctionName() + "(" + paramStringBuilder.toString() + ");" +
+                printOutpt(request) +
                 "}}";
     }
 

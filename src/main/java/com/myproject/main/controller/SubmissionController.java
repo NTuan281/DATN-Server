@@ -1,11 +1,17 @@
 package com.myproject.main.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.myproject.main.exception.DuplicateTestSubmissionException;
 import com.myproject.main.model.Submission;
+import com.myproject.main.request.SubmissionRequest;
+import com.myproject.main.request.TestSubmissionRequest;
 import com.myproject.main.service.SubmissionService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -13,14 +19,24 @@ import java.util.List;
 public class SubmissionController {
 
     private final SubmissionService submissionService;
-
     @Autowired
     public SubmissionController(SubmissionService submissionService) {
         this.submissionService = submissionService;
     }
 
-    @GetMapping
-    public List<Submission> getAllSubmissions() {
+    @PostMapping("/leaderboard")
+    public List<Submission> getLeaderboard(@RequestBody TestSubmissionRequest request) {
+        return submissionService.getLeaderboard(request.getProblemId());
+    }
+    
+    @PostMapping("/getSubmissions")
+    public List<Submission> getSubmissions(
+    		@RequestBody SubmissionRequest request) {
+        return submissionService.getSubmissionsByTimeAndProblemId(request.getSubmissionTime(), request.getProblemId());
+    }
+    
+    @GetMapping("/all")
+    public List<Submission> getAllSubmissions(){   
         return submissionService.getAllSubmissions();
     }
 
@@ -30,8 +46,9 @@ public class SubmissionController {
     }
 
     @PostMapping
-    public Submission createSubmission(@RequestBody Submission submission) {
-        return submissionService.createSubmission(submission);
+    public ResponseEntity<?> createSubmission(@RequestBody Submission submission) throws SQLException {
+            Submission savedSubmission = submissionService.createSubmission(submission);
+            return ResponseEntity.ok(savedSubmission);
     }
 
     @PutMapping("/{id}")

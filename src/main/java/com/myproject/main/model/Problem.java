@@ -18,68 +18,55 @@ public class Problem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "name",nullable = false,unique = true)
+	@Column(name = "name", nullable = false, unique = true)
 	private String name;
-	
+
 	@Column(name = "desciption")
 	private String description;
-	
+
 	@Column(name = "guide")
 	private String guide;
-	
+
 	@Column(name = "difficulty")
 	private String difficulty;
 
 	@Column(name = "create_at")
 	private Date createAt;
-	
+
 	@Column(name = "function_name")
 	private String functionName;
-	
+
 	@Column(name = "return_type")
 	private String returnType;
+
+	@Column(name = "is_test")
+	private boolean isTest;
+
+	@Column(name = "time_limit")
+	private int timeLimit;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL)
 	@JsonIgnore
-    private List<TestCase> testcases;
+	private List<TestCase> testcases;
 
 	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
 	private List<Submission> submissions;
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "problem_tags", joinColumns = @JoinColumn(name = "problem_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
 	private Set<Tag> tags = new HashSet<>();
 
-	
-	
 	public List<TestCase> getTestcases() {
 		return testcases;
 	}
 
 	public void setTestcases(List<TestCase> testcases) {
 		this.testcases = testcases;
-	}
-
-	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt,
-			String functionName, String returnType, User user, List<TestCase> testcases, List<Submission> submissions,
-			Set<Tag> tags) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.guide = guide;
-		this.difficulty = difficulty;
-		this.createAt = createAt;
-		this.functionName = functionName;
-		this.returnType = returnType;
-		this.user = user;
-		this.testcases = testcases;
-		this.submissions = submissions;
-		this.tags = tags;
 	}
 
 	public String getFunctionName() {
@@ -162,6 +149,42 @@ public class Problem {
 		return submissions;
 	}
 
+	public Problem(int id, String name, String description, String guide, String difficulty, Date createAt,
+			String functionName, String returnType, User user, List<TestCase> testcases, List<Submission> submissions,
+			Set<Tag> tags, boolean isTest, int timeLimit) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.guide = guide;
+		this.difficulty = difficulty;
+		this.createAt = createAt;
+		this.functionName = functionName;
+		this.returnType = returnType;
+		this.user = user;
+		this.testcases = testcases;
+		this.submissions = submissions;
+		this.tags = tags;
+		this.isTest = isTest;
+		this.timeLimit = timeLimit;
+	}
+
+	public boolean isTest() {
+		return isTest;
+	}
+
+	public void setTest(boolean isTest) {
+		this.isTest = isTest;
+	}
+
+	public int getTimeLimit() {
+		return timeLimit;
+	}
+
+	public void setTimeLimit(int timeLimit) {
+		this.timeLimit = timeLimit;
+	}
+
 	public void setSubmissions(List<Submission> submissions) {
 		this.submissions = submissions;
 	}
@@ -174,11 +197,10 @@ public class Problem {
 		this.tags = tags;
 	}
 
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(createAt, description, difficulty, functionName, guide, id, name, returnType, submissions,
-				tags, testcases, user);
+		return Objects.hash(createAt, description, difficulty, functionName, guide, id, isTest, name, returnType,
+				submissions, tags, testcases, timeLimit, user);
 	}
 
 	@Override
@@ -192,18 +214,11 @@ public class Problem {
 		Problem other = (Problem) obj;
 		return Objects.equals(createAt, other.createAt) && Objects.equals(description, other.description)
 				&& Objects.equals(difficulty, other.difficulty) && Objects.equals(functionName, other.functionName)
-				&& Objects.equals(guide, other.guide) && id == other.id && Objects.equals(name, other.name)
-				&& Objects.equals(returnType, other.returnType) && Objects.equals(submissions, other.submissions)
-				&& Objects.equals(tags, other.tags) && Objects.equals(testcases, other.testcases)
+				&& Objects.equals(guide, other.guide) && id == other.id && isTest == other.isTest
+				&& Objects.equals(name, other.name) && Objects.equals(returnType, other.returnType)
+				&& Objects.equals(submissions, other.submissions) && Objects.equals(tags, other.tags)
+				&& Objects.equals(testcases, other.testcases) && timeLimit == other.timeLimit
 				&& Objects.equals(user, other.user);
-	}
-
-	@Override
-	public String toString() {
-		return "Problem [id=" + id + ", name=" + name + ", description=" + description + ", guide=" + guide
-				+ ", difficulty=" + difficulty + ", createAt=" + createAt + ", functionName=" + functionName
-				+ ", returnType=" + returnType + ", user=" + user + ", testcases=" + testcases + ", submissions="
-				+ submissions + ", tags=" + tags + "]";
 	}
 
 }
